@@ -1,0 +1,1 @@
+A tool that enable you to convert Solr document results to an CSharp class

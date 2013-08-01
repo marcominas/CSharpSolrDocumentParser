@@ -1,0 +1,103 @@
+﻿<response>
+  <result>
+
+    <doc>
+      <str name="id">emp#2008-09.001</str>
+      <str name="name">Marco Antonio Almeida</str>
+      <str name="email">marcominas@hotmail.com</str>
+      <str name="role">Employee</str>
+      <date name="hiredate">2008-09-01T00:00:00Z</date>
+      <str name="address">Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP</str>
+      <short name="status">1</short>
+      <float name="sallary">3567.93</float>
+      <arr name="skills">
+        <str>first skill</str>
+        <str>second skill</str>
+      </arr>
+      <long name="photoid">356793</long>
+      <float name="discount">10.00</float>
+    </doc>
+
+    <doc>
+      <str name="id">emp#2007-09.001</str>
+      <str name="name">Supervisor Marco Antonio Almeida</str>
+      <str name="email">marcominas@hotmail.com</str>
+      <str name="role">Supervisor</str>
+      <date name="hiredate">2007-09-01T00:00:00Z</date>
+      <str name="address">Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP</str>
+      <short name="status">1</short>
+      <float name="sallary">3567.93</float>
+      <arr name="skills">
+        <str>first skill</str>
+        <str>second skill</str>
+      </arr>
+      <arr name="subordinates">
+        <str>emp#2007-09.002|First Employee|one@company.com|employee|2007-09-01T00:00:00Z|Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP|1</str>
+        <str>emp#2007-09.003|Other Employee|two@company.com|employee|2007-09-01T00:00:00Z|Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP|1</str>
+      </arr>
+      <long name="photoid">356793</long>
+      <float name="discount">10.00</float>
+    </doc>
+
+    <doc>
+      <str name="id">emp#2006-09.001</str>
+      <str name="name">Manager Marco Antonio Almeida</str>
+      <str name="email">marcominas@hotmail.com</str>
+      <str name="role">Manager</str>
+      <date name="hiredate">2006-09-01T00:00:00Z</date>
+      <str name="address">Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP</str>
+      <short name="status">1</short>
+      <float name="sallary">3567.93</float>
+      <arr name="skills">
+        <str>first skill</str>
+        <str>second skill</str>
+      </arr>
+      <arr name="subordinates">
+        <str>emp#2007-09.002|First Employee|one_one@company.com|employee|2007-09-01T00:00:00Z|Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP|1</str>
+        <str>emp#2007-09.003|Other Employee|one_two@company.com|employee|2007-09-01T00:00:00Z|Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP|1</str>
+      </arr>
+      <arr name="supervisors">
+        <str>emp#2006-09.004|First Supervisor|two_one@company.com|supervisor|2006-09-01T00:00:00Z|Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP|1</str>
+        <str>emp#2006-09.005|Other Supervisor|two_two@company.com|supervisor|2006-09-01T00:00:00Z|Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP|1</str>
+        <str>emp#2006-09.006|Other Supervisor|two_thr@company.com|supervisor|2006-09-01T00:00:00Z|Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP|1</str>
+      </arr>
+      <long name="photoid">356793</long>
+      <float name="discount">10.00</float>
+    </doc>
+
+    <doc>
+      <str name="id">emp#2005-09.001</str>
+      <str name="name">Director Marco Antonio Almeida</str>
+      <str name="email">marcominas@hotmail.com</str>
+      <str name="role">Director</str>
+      <date name="hiredate">2005-09-01T00:00:00Z</date>
+      <str name="address">Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP</str>
+      <short name="status">1</short>
+      <float name="sallary">3567.93</float>
+      <arr name="skills">
+        <str>first skill</str>
+        <str>second skill</str>
+      </arr>
+      <long name="photoid">356793</long>
+      <float name="discount">10.00</float>
+    </doc>
+
+    <doc>
+      <str name="id">emp#2004-09.001</str>
+      <str name="name">President Marco Antonio Almeida</str>
+      <str name="email">marcominas@hotmail.com</str>
+      <str name="role">President</str>
+      <date name="hiredate">2004-09-01T00:00:00Z</date>
+      <str name="address">Rua Lourenco Vanucci, 12 Jardim Guaruja Sorocaba-SP</str>
+      <short name="status">1</short>
+      <float name="sallary">3567.93</float>
+      <arr name="skills">
+        <str>first skill</str>
+        <str>second skill</str>
+      </arr>
+      <long name="photoid">356793</long>
+      <float name="discount">10.00</float>
+    </doc>
+
+  </result>
+</response>
