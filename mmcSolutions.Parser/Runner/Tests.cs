@@ -10,13 +10,15 @@ namespace mmcSolutions.SolrParser.Runner
     /// </summary>
     public class Tests
     {
+        private const string DATA_PATH = @"D:\Projetos\GitHub\CSharpSolrDocumentParser\mmcSolutions.Parser\mmcSolutions.Parser\Sample\Data\";
+
         /// <summary>
         /// Parse a Employee DTO from a XML result query sample.
         /// </summary>
         public static void BasicTestResultParser()
         {
             // XML Solr query result sample that contains one employee valid data.
-            var file = @"D:\Projetos\Estudos\mmcSolutions.Parser\mmcSolutions.Parser\Sample\Data\Employee.xml";
+            var file = Path.Combine(DATA_PATH, @"Employee.xml");
             var xml = File.ReadAllText(file, Encoding.Unicode);
 
             Console.WriteLine();
@@ -125,10 +127,21 @@ namespace mmcSolutions.SolrParser.Runner
         /// <returns></returns>
         private static Parameters ParameterWithFile()
         {
-            var param = new Parameters();
-            // XML Solr query result sample that contains many employee valid data with different employee role.
-            param.SolrResultFile = @"D:\Projetos\Estudos\mmcSolutions.Parser\mmcSolutions.Parser\Sample\Data\Employees.xml";
-            return param;
+            return new Parameters { SolrResultFile = Path.Combine(DATA_PATH, @"Employees.xml") };
+        }
+
+        public static void ComplexTestResultParser()
+        {
+            var param = new Parameters { SolrResultFile = Path.Combine(DATA_PATH, @"Complex.xml") };
+            // The search method will create a supervisor role.
+            var result = SearchEngine.Search<Sample.DTO.Complex.Person>(param);
+
+            Console.WriteLine();
+            Console.WriteLine("Test - Supervisor parser using parameter without role.");
+
+            foreach (Sample.DTO.Complex.Person doc in result)
+                Console.WriteLine(string.Format("{4}\r\n  ID...........: {0};\r\n  Name.........: {1};\r\n  E-mail.......: {2};\r\n  Subordinates.: {3}\r\n{5}", 
+                                    doc.ID, doc.Name, doc.ContactInfo.Email, doc.ContactInfo.Phone.Area, "{", "}"));
         }
 
     }

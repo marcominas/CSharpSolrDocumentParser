@@ -1,0 +1,16 @@
+﻿<response>
+  <result>
+    <doc>
+      <str name="id">123456789</str>
+      <str name="name">Marco Antonio Almeida</str>
+      <date name="birthdate">1967-06-13T00:00:00Z</date>
+      <str name="contactinfo_email">marcominas@hotmail.com</str>
+      <str name="contactinfo_telephone_country">55</str>
+      <str name="contactinfo_telephone_area">15</str>
+      <str name="contactinfo_telephone_number">123456789</str>
+      <str name="contactinfo_cellphone_country">55</str>
+      <str name="contactinfo_cellphone_area">15</str>
+      <str name="contactinfo_cellphone_number">987654321</str>
+    </doc>
+  </result>
+</response>

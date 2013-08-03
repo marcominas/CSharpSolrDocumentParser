@@ -130,66 +130,73 @@ namespace mmcSolutions.SolrParser
         /// <param name="pi">A PropertyInfo with a SolrAttribute used to select data in XML.</param>
         /// <param name="xml">A Solr XML query result.</param>
         /// <returns></returns>
-        private static object GetObjectValue(PropertyInfo pi, string xml)
+        private static object GetObjectValue(PropertyInfo pi, string xml, string pre = "")
         {
             var element = XDocument.Parse(xml).Descendants("doc");
             var attribute = GetAttribute<SolrAttribute>(pi);
+
+            if (!string.IsNullOrEmpty(pre))
+                attribute.Name = string.Format("{0}_{1}", pre, attribute.Name);
             
             switch (attribute.Type)
             {
                 case SolrType.Array:
-                    return element.Select(e => new { Value = e.ToArray(attribute.Name) }).ToList()[0].Value;
+                    return element.Select(e => new { Value = e.ToArray(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Date:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToDateOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToDateOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToDate(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToDate(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Bool:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToBooleanOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToBooleanOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToBoolean(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToBoolean(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Decimal:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToDecimalOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToDecimalOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToDecimal(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToDecimal(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Double:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToDoubleOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToDoubleOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToDouble(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToDouble(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Int:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToIntOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToIntOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToInt(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToInt(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Long:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToLongOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToLongOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToLong(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToLong(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Short:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToShortOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToShortOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToShort(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToShort(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Float:
                     if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToFloatOrNull(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToFloatOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
-                        return element.Select(e => new { Value = e.ToFloat(attribute.Name) }).ToList()[0].Value;
+                        return element.Select(e => new { Value = e.ToFloat(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.String:
-                    return element.Select(e => new { Value = e.ToString(attribute.Name) }).ToList()[0].Value;
+                    return element.Select(e => new { Value = e.ToString(attribute.Name) }).SingleOrDefault().Value;
+
+                case SolrType.Complex:
+                    return element.Select(e => new { Value = e.ToComplex(attribute.Name, xml, pi) }).SingleOrDefault().Value;
+            
             }
 
             return null;
@@ -256,5 +263,24 @@ namespace mmcSolutions.SolrParser
             return null;
         }
 
+        public static object Parse(String xml, PropertyInfo info, string pre = "")
+        {
+            var entity = Activator.CreateInstance(info.PropertyType);
+            var properties = info.PropertyType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            if (string.IsNullOrEmpty(pre))
+                pre = GetAttribute<SolrAttribute>(info).Name;
+            foreach (PropertyInfo pi in properties)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(GetAttribute<SolrAttribute>(pi).Name))
+                    {
+                        pi.SetValue(entity, GetObjectValue(pi, xml, pre), null);
+                    }
+                }
+                finally { }
+            }
+            return entity;
+        }
     }
 }

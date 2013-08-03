@@ -240,6 +240,13 @@ namespace mmcSolutions.SolrParser
             catch { return null; }
         }
 
+        public static object ToComplex(this XElement elemento, string atributo, string xml, System.Reflection.PropertyInfo pi)
+        {
+            try { return ResultParser.Parse(xml, pi, atributo); }
+            catch { return default(object); }
+        }
+
+
         /// <summary>
         /// Gets the value of an element in an XML coming from Solr's name and attribute specified.
         /// </summary>

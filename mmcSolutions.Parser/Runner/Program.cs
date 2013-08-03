@@ -9,6 +9,7 @@ namespace mmcSolutions.SolrParser.Runner
     {
         public static void Main(string[] args)
         {
+            Tests.ComplexTestResultParser();
             Tests.BasicTestResultParser();
             Tests.TestResultParserUsingFileParameter();
             Tests.TestEmployeeParserUsingFileParameter();

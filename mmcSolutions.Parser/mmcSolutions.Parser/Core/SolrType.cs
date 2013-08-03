@@ -50,6 +50,10 @@ namespace mmcSolutions.SolrParser
         /// <summary>
         /// Float
         /// </summary>
-        Float
+        Float,
+        /// <summary>
+        /// Complex data type
+        /// </summary>
+        Complex
     }
 }

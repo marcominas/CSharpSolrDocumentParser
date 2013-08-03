@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Document.cs" />
+    <Compile Include="Sample\DTO\Complex\ContactInfo.cs" />
+    <Compile Include="Sample\DTO\Complex\Person.cs" />
+    <Compile Include="Sample\DTO\Complex\Telephone.cs" />
     <Compile Include="Sample\DTO\Director.cs" />
     <Compile Include="Sample\DTO\Levels.cs" />
     <Compile Include="Sample\DTO\Manager.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="Core\ParserExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Sample\Data\Complex.xml" />
     <Content Include="Sample\Data\Employees.xml" />
     <Content Include="Sample\Data\Employee.xml" />
   </ItemGroup>
