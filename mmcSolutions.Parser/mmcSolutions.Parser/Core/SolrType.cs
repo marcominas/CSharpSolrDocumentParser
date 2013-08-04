@@ -11,18 +11,29 @@ namespace mmcSolutions.SolrParser
         /// Not convertible type
         /// </summary>
         NotConvertible,
+
         /// <summary>
         /// String solr type
         /// </summary>
         String,
         /// <summary>
+        /// Binary solr type
+        /// </summary>
+        Binary,
+        /// <summary>
         /// Array solr type
         /// </summary>
         Array,
+
         /// <summary>
         /// DateTime solr type
         /// </summary>
         Date,
+
+        /// <summary>
+        /// Byte solr type
+        /// </summary>
+        Byte,
         /// <summary>
         /// Boolean
         /// </summary>
@@ -39,6 +50,7 @@ namespace mmcSolutions.SolrParser
         /// Long solr type
         /// </summary>
         Long,
+
         /// <summary>
         /// Decimal solr type
         /// </summary>
@@ -52,8 +64,19 @@ namespace mmcSolutions.SolrParser
         /// </summary>
         Float,
         /// <summary>
+        /// Currency solr type
+        /// </summary>
+        Currency,
+
+        /// <summary>
+        /// Latitide/longitude coordinate solr type
+        /// </summary>
+        Coordinate,
+
+        /// <summary>
         /// Complex data type
         /// </summary>
         Complex
+
     }
 }

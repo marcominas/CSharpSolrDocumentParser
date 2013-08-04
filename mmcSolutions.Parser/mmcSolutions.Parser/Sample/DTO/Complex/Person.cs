@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace mmcSolutions.SolrParser.Sample.DTO.Complex
 {
@@ -15,6 +16,21 @@ namespace mmcSolutions.SolrParser.Sample.DTO.Complex
 
         [SolrAttribute(Name = "contactinfo", Type = SolrType.Complex, IsNullable = true)]
         public ContactInfo ContactInfo { get; set; }
+
+        [SolrAttribute(Name = "friends", Type = SolrType.Array, IsNullable = true)]
+        public List<string> Friends { get; set; }
+
+        [SolrAttribute(Name = "married", Type = SolrType.Bool, IsNullable = true)]
+        public bool Married { get; set; }
+
+        [SolrAttribute(Name = "numberofchildren", Type = SolrType.Short, IsNullable = true)]
+        public short NumberOfChildren { get; set; }
+
+        [SolrAttribute(Name = "weight", Type = SolrType.Decimal, IsNullable = true)]
+        public decimal Weight { get; set; }
+
+        [SolrAttribute(Name = "height", Type = SolrType.Float, IsNullable = true)]
+        public float Height { get; set; }
 
     }
 }

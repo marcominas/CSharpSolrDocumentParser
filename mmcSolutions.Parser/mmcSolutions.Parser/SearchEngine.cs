@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Xml;
+using System.Text;
+using System.Collections.Generic;
 using mmcSolutions.SolrParser.Sample.DTO;
 
 namespace mmcSolutions.SolrParser
@@ -28,7 +30,7 @@ namespace mmcSolutions.SolrParser
         /// <returns>Uma lista de objetos do tipo T de acordo com os critérios especificados pelos parâmetros.</returns>
         public static List<T> Search<T>(Parameters parameters)
         {
-            var instance = (T)Activator.CreateInstance<T>();
+            var instance = Activator.CreateInstance<T>();
 
             if (instance is President)
                 return QueryEmployeesByRole<T>(parameters, "president");
@@ -68,13 +70,12 @@ namespace mmcSolutions.SolrParser
                 // Adiciona um documento de busca para cada nó "<doc>" encontrado no XML retornado.
                 if (addDocs)
                 {
-                    var type = typeof(T);
                     foreach (XmlNode item in GetNodes(xml, ResultParser.XpathSolrDocuments))
                     {
                         var format = "{0}";
                         if (!item.InnerXml.Contains("<doc>"))
                             format = "<doc>{0}</doc>";
-                        var doc = (T)ResultParser.Parse<T>(string.Format(format, item.InnerXml));
+                        var doc = ResultParser.Parse<T>(string.Format(format, item.InnerXml));
                         result.Add(doc);
                     }
                 }
@@ -195,7 +196,7 @@ namespace mmcSolutions.SolrParser
         private static XmlDocument GetSearchResultFromFile(Parameters parameters)
         {
             var docs = new XmlDocument();
-            var xml = System.IO.File.ReadAllText(parameters.SolrResultFile, System.Text.Encoding.Unicode);
+            var xml = File.ReadAllText(parameters.SolrResultFile, Encoding.Unicode);
             var result = "";
             var role = string.Empty;
             int count = 0;

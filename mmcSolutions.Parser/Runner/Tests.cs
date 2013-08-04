@@ -30,6 +30,7 @@ namespace mmcSolutions.SolrParser.Runner
                 Console.WriteLine(string.Format("ID {0}; Name {1}; e-mail {2}", obj.ID, obj.Name, obj.Email));
             }
         }
+
         /// <summary>
         /// Parse a list of Employee and Employee inherited class DTOs from a XML result query sample.
         /// </summary>
@@ -44,6 +45,7 @@ namespace mmcSolutions.SolrParser.Runner
             foreach (var doc in result)
                 Console.WriteLine(string.Format("ID {0}; Version {1}", doc.DocumentID, doc.Version));
         }
+
         /// <summary>
         /// Parse a list of Employee class DTOs from a XML result query sample.
         /// </summary>
@@ -98,7 +100,9 @@ namespace mmcSolutions.SolrParser.Runner
                                     doc.ID, doc.Name, doc.Email, doc.Subordinates.Count, "{", "}", subordinates));
             }
         }
-
+        /// <summary>
+        /// Parse a list of Supervisor Employee inherited class DTOs from a XML result query sample.
+        /// </summary>
         public static void TestManagerParserUsingFileParameter()
         {
             var param = ParameterWithFile();
@@ -130,6 +134,10 @@ namespace mmcSolutions.SolrParser.Runner
             return new Parameters { SolrResultFile = Path.Combine(DATA_PATH, @"Employees.xml") };
         }
 
+        /// <summary>
+        /// The DTO Person contains a <see cref="ContactInfo">ContactInfo</see> property that contains a e-mail property and two <see cref="Telephone">Telephone</see> properties.
+        /// This sample is about parse a Person class properly with its class properties too.
+        /// </summary>
         public static void ComplexTestResultParser()
         {
             var param = new Parameters { SolrResultFile = Path.Combine(DATA_PATH, @"Complex.xml") };
@@ -137,11 +145,11 @@ namespace mmcSolutions.SolrParser.Runner
             var result = SearchEngine.Search<Sample.DTO.Complex.Person>(param);
 
             Console.WriteLine();
-            Console.WriteLine("Test - Supervisor parser using parameter without role.");
+            Console.WriteLine("Test - Parse a complex DTO that contains others DTO in its properties.");
 
             foreach (Sample.DTO.Complex.Person doc in result)
-                Console.WriteLine(string.Format("{4}\r\n  ID...........: {0};\r\n  Name.........: {1};\r\n  E-mail.......: {2};\r\n  Subordinates.: {3}\r\n{5}", 
-                                    doc.ID, doc.Name, doc.ContactInfo.Email, doc.ContactInfo.Phone.Area, "{", "}"));
+                Console.WriteLine(string.Format("\r\n  ID...........: {0};\r\n  Name.........: {1};\r\n  E-mail.......: {2};\r\n  Telephone....: ({3}) {4};\r\n  Cellphone....: ({5}) {6}",
+                                    doc.ID, doc.Name, doc.ContactInfo.Email, doc.ContactInfo.Phone.Area, doc.ContactInfo.Phone.Number, doc.ContactInfo.CellPhone.Area, doc.ContactInfo.CellPhone.Number));
         }
 
     }

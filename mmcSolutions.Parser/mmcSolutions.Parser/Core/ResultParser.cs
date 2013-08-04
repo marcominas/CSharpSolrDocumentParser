@@ -24,15 +24,15 @@ namespace mmcSolutions.SolrParser
         /// <returns>A instance of T class with properties with same name and datatype of passed object filled.</returns>
         internal static T GetInstanceWithPropertiesFilled<T>(object obj)
         {
-            var entity = Activator.CreateInstance<T>();
+            var instance = Activator.CreateInstance<T>();
             var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo pi in properties)
             {
                 var epi = obj.GetType().GetProperty(pi.Name);
                 if (epi != null && pi.PropertyType.Equals(epi.PropertyType))
-                    pi.SetValue(entity, epi.GetValue(obj, null), null);
+                    pi.SetValue(instance, epi.GetValue(obj, null), null);
             }
-            return entity;
+            return instance;
         }
 
         /// <summary>
@@ -52,18 +52,19 @@ namespace mmcSolutions.SolrParser
         /// <returns>A object with its properties filled according to XML data.</returns>
         public static T Parse<T>(String xml)
         {
-            var entity = Activator.CreateInstance<T>();
+            var instance = Activator.CreateInstance<T>();
             var properties = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo pi in properties)
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(GetAttribute<SolrAttribute>(pi).Name)) 
-                        pi.SetValue(entity, GetObjectValue(pi, xml), null);
+                    var attr = GetAttribute<SolrAttribute>(pi);
+                    if (!string.IsNullOrEmpty(attr.Name))
+                        pi.SetValue(instance, GetObjectValue(pi, attr, xml), null);
                 }
                 finally { }
             }
-            return entity;
+            return instance;
         }
         /// <summary>
         /// Returns a array according to XML query result data.
@@ -75,11 +76,17 @@ namespace mmcSolutions.SolrParser
         public static List<T> GetArray<T>(string xml, string name)
         {
             var result = new List<T>();
-            var nodeName = GetNodeName<T>();
             var element = GetXElementFromXML(xml, SolrType.Array, name);
+
             if (element != null)
+            {
+                var nodeName = GetNodeName<T>();
                 foreach (XNode obj in element.Nodes())
-                result.Add((T)Convert.ChangeType(obj.RemoveNodeName(nodeName), typeof(T)));
+                {
+                    try { result.Add((T)Convert.ChangeType(obj.RemoveNodeName(nodeName), typeof(T))); }
+                    catch { }
+                }
+            }
             return result;
         }
         /// <summary>
@@ -103,6 +110,9 @@ namespace mmcSolutions.SolrParser
         private static string GetNodeName<T>()
         {
             var instance = typeof(T);
+
+            if (instance.Equals(typeof(string)))
+                return "str";
             if (instance.Equals(typeof(short)))
                 return "short";
             if (instance.Equals(typeof(int)))
@@ -119,8 +129,6 @@ namespace mmcSolutions.SolrParser
                 return "double";
             if (instance.Equals(typeof(float)))
                 return "float";
-            if (instance.Equals(typeof(string)))
-                return "str";
 
             return null;
         }
@@ -130,10 +138,9 @@ namespace mmcSolutions.SolrParser
         /// <param name="pi">A PropertyInfo with a SolrAttribute used to select data in XML.</param>
         /// <param name="xml">A Solr XML query result.</param>
         /// <returns></returns>
-        private static object GetObjectValue(PropertyInfo pi, string xml, string pre = "")
+        private static object GetObjectValue(PropertyInfo pi, SolrAttribute attribute, string xml, string pre = "")
         {
             var element = XDocument.Parse(xml).Descendants("doc");
-            var attribute = GetAttribute<SolrAttribute>(pi);
 
             if (!string.IsNullOrEmpty(pre))
                 attribute.Name = string.Format("{0}_{1}", pre, attribute.Name);
@@ -141,7 +148,7 @@ namespace mmcSolutions.SolrParser
             switch (attribute.Type)
             {
                 case SolrType.Array:
-                    return element.Select(e => new { Value = e.ToArray(attribute.Name) }).SingleOrDefault().Value;
+                    return GetArray(pi, element, attribute.Name);
 
                 case SolrType.Date:
                     if (attribute.IsNullable)
@@ -156,6 +163,7 @@ namespace mmcSolutions.SolrParser
                         return element.Select(e => new { Value = e.ToBoolean(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Decimal:
+                case SolrType.Currency:
                     if (attribute.IsNullable)
                         return element.Select(e => new { Value = e.ToDecimalOrNull(attribute.Name) }).SingleOrDefault().Value;
                     else
@@ -192,6 +200,7 @@ namespace mmcSolutions.SolrParser
                         return element.Select(e => new { Value = e.ToFloat(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.String:
+                case SolrType.Binary:
                     return element.Select(e => new { Value = e.ToString(attribute.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Complex:
@@ -199,6 +208,29 @@ namespace mmcSolutions.SolrParser
             
             }
 
+            return null;
+        }
+
+        private static object GetArray(PropertyInfo pi, IEnumerable<XElement> element, string attributeName)
+        {
+            if (pi.PropertyType.Equals(typeof(List<string>)))
+                return element.Select(e => new { Value = e.ToArray<string>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<int>)))
+                return element.Select(e => new { Value = e.ToArray<int>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<short>)))
+                return element.Select(e => new { Value = e.ToArray<short>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<long>)))
+                return element.Select(e => new { Value = e.ToArray<long>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<decimal>)))
+                return element.Select(e => new { Value = e.ToArray<decimal>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<double>)))
+                return element.Select(e => new { Value = e.ToArray<double>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<float>)))
+                return element.Select(e => new { Value = e.ToArray<float>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<DateTime>)))
+                return element.Select(e => new { Value = e.ToArray<bool>(attributeName) }).SingleOrDefault().Value;
+            if (pi.PropertyType.Equals(typeof(List<DateTime>)))
+                return element.Select(e => new { Value = e.ToArray<bool>(attributeName) }).SingleOrDefault().Value;
             return null;
         }
         /// <summary>
@@ -209,9 +241,9 @@ namespace mmcSolutions.SolrParser
         /// <returns></returns>
         private static T GetAttribute<T>(PropertyInfo property)
         {
-            foreach (object attribute in property.GetCustomAttributes(typeof(T), false))
-                if (attribute is T)
-                    return (T)attribute;
+            foreach (var attr in property.GetCustomAttributes(typeof(T), false))
+                if (attr!= null &&  attr is T)
+                    return (T)attr;
             return Activator.CreateInstance<T>();
         }
         /// <summary>
@@ -265,7 +297,7 @@ namespace mmcSolutions.SolrParser
 
         public static object Parse(String xml, PropertyInfo info, string pre = "")
         {
-            var entity = Activator.CreateInstance(info.PropertyType);
+            var instance = Activator.CreateInstance(info.PropertyType);
             var properties = info.PropertyType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             if (string.IsNullOrEmpty(pre))
                 pre = GetAttribute<SolrAttribute>(info).Name;
@@ -273,14 +305,14 @@ namespace mmcSolutions.SolrParser
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(GetAttribute<SolrAttribute>(pi).Name))
-                    {
-                        pi.SetValue(entity, GetObjectValue(pi, xml, pre), null);
-                    }
+                    var attr = GetAttribute<SolrAttribute>(pi);
+                    if (!string.IsNullOrEmpty(attr.Name))
+                        pi.SetValue(instance, GetObjectValue(pi, attr, xml, pre), null);
                 }
                 finally { }
             }
-            return entity;
+            return instance;
         }
+
     }
 }

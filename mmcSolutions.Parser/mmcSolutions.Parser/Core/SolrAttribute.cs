@@ -3,16 +3,11 @@
 namespace mmcSolutions.SolrParser
 {
     /// <summary>
-    /// 
+    /// Attribute class to be used with text file parser.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class SolrAttribute : System.Attribute
     {
-        /// <summary>
-        /// Attribute class to be used with text file parser.
-        /// </summary>
-        public SolrAttribute() : base() { }
-
         /// <summary>
         /// The name of field.
         /// </summary>

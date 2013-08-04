@@ -20,8 +20,7 @@ namespace mmcSolutions.SolrParser
         /// <returns>A Employee class with its properties filled acording XML data.</returns>
         internal static Employee ParseEmployee(string xml)
         {
-            var result = ResultParser.Parse<Employee>(xml);
-            return result;
+            return ResultParser.Parse<Employee>(xml);
         }
         /// <summary>
         /// Parse a Supervisor from a XML Solr result.
