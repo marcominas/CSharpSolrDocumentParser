@@ -2,16 +2,17 @@
 
 namespace mmcSolutions.SolrParser
 {
-    /// <summary>
-    /// Attribute class to be used with text file parser.
-    /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class SolrAttribute : Attribute, ISolrAttribute
+    public sealed class SolrComplexAttribute : Attribute, ISolrAttribute
     {
         /// <summary>
-        /// Field name.
+        /// Prefix used to mount field name.
         /// </summary>
-        public String Name { get; set; }
+        public String Prefix { get; set; }
+        /// <summary>
+        /// String used to concatenate
+        /// </summary>
+        public string Separator { get; set; }
         /// <summary>
         /// Specify Solr data type.
         /// </summary>

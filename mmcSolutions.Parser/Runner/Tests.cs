@@ -10,7 +10,21 @@ namespace mmcSolutions.SolrParser.Runner
     /// </summary>
     public class Tests
     {
-        private const string DATA_PATH = @"D:\Projetos\GitHub\CSharpSolrDocumentParser\mmcSolutions.Parser\mmcSolutions.Parser\Sample\Data\";
+        private const string DATA_PATH = @"..\..\..\mmcSolutions.Parser\Sample\Data\";
+        private static string GetFullPathSampleFile(string filename)
+        {
+            var dataPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, DATA_PATH));
+
+            if (!Directory.Exists(dataPath))
+                throw new DirectoryNotFoundException(string.Format("Path not found: {0}", dataPath));
+
+            var filePath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, DATA_PATH, filename));
+
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException(string.Format("File not found: {0}", dataPath));
+
+            return filePath;
+        }
 
         /// <summary>
         /// Parse a Employee DTO from a XML result query sample.
@@ -18,7 +32,7 @@ namespace mmcSolutions.SolrParser.Runner
         public static void BasicTestResultParser()
         {
             // XML Solr query result sample that contains one employee valid data.
-            var file = Path.Combine(DATA_PATH, @"Employee.xml");
+            var file = GetFullPathSampleFile(@"Employee.xml");
             var xml = File.ReadAllText(file, Encoding.Unicode);
 
             Console.WriteLine();
@@ -74,7 +88,7 @@ namespace mmcSolutions.SolrParser.Runner
             Console.WriteLine("Test - Supervisor parser using parameter without role.");
 
             foreach (Sample.DTO.Supervisor doc in result)
-                Console.WriteLine(string.Format("{4}\r\n  ID...........: {0};\r\n  Name.........: {1};\r\n  E-mail.......: {2};\r\n  Subordinates.: {3}\r\n{5}", 
+                Console.WriteLine(string.Format("{4}\r\n  ID...........: {0};\r\n  Name.........: {1};\r\n  E-mail.......: {2};\r\n  Subordinates.: {3}\r\n{5}",
                                     doc.ID, doc.Name, doc.Email, doc.Subordinates.Count, "{", "}"));
         }
         /// <summary>
@@ -131,7 +145,8 @@ namespace mmcSolutions.SolrParser.Runner
         /// <returns></returns>
         private static Parameters ParameterWithFile()
         {
-            return new Parameters { SolrResultFile = Path.Combine(DATA_PATH, @"Employees.xml") };
+            var file = GetFullPathSampleFile(@"Employees.xml");
+            return new Parameters { SolrResultFile = file };
         }
 
         /// <summary>
@@ -140,7 +155,8 @@ namespace mmcSolutions.SolrParser.Runner
         /// </summary>
         public static void ComplexTestResultParser()
         {
-            var param = new Parameters { SolrResultFile = Path.Combine(DATA_PATH, @"Complex.xml") };
+            var file = GetFullPathSampleFile(@"Complex.xml");
+            var param = new Parameters { SolrResultFile = file };
             // The search method will create a supervisor role.
             var result = SearchEngine.Search<Sample.DTO.Complex.Person>(param);
 

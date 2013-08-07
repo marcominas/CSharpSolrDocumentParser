@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ISolrAttribute.cs" />
+    <Compile Include="Core\SolrComplexAttribute.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="Sample\DTO\Complex\ContactInfo.cs" />
     <Compile Include="Sample\DTO\Complex\Person.cs" />

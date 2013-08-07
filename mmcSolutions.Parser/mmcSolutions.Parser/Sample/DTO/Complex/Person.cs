@@ -14,7 +14,7 @@ namespace mmcSolutions.SolrParser.Sample.DTO.Complex
         [SolrAttribute(Name = "birthdate", Type = SolrType.Date, IsNullable = false)]
         public DateTime BirthDate { get; set; }
 
-        [SolrAttribute(Name = "contactinfo", Type = SolrType.Complex, IsNullable = true)]
+        [SolrComplexAttribute(Prefix = "contactinfo", Separator = "_", Type = SolrType.Complex, IsNullable = true)]
         public ContactInfo ContactInfo { get; set; }
 
         [SolrAttribute(Name = "friends", Type = SolrType.Array, IsNullable = true)]

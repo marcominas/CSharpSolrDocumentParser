@@ -60,7 +60,7 @@ namespace mmcSolutions.SolrParser
         /// <returns>The value if the attribute is found or default value of a DateTime if any error.</returns>
         public static DateTime ToDate(this XElement element, string attribute)
         {
-            try 
+            try
             {
                 var value = GetValue(element, "date", attribute).Replace("Z", "").Replace("T", " ");
                 return DateTime.Parse(value, CultureInfo.InvariantCulture);
@@ -75,7 +75,7 @@ namespace mmcSolutions.SolrParser
         /// <returns>The value if the attribute is found or null if any error.</returns>
         public static DateTime? ToDateOrNull(this XElement element, string attribute)
         {
-            try 
+            try
             {
                 var value = GetValue(element, "date", attribute).Replace("Z", "").Replace("T", " ");
                 return DateTime.Parse(value, CultureInfo.InvariantCulture);
@@ -244,9 +244,9 @@ namespace mmcSolutions.SolrParser
             catch { return null; }
         }
 
-        public static object ToComplex(this XElement element, string attribute, string xml, System.Reflection.PropertyInfo pi)
+        public static object ToComplex(this XElement element, string xml, System.Reflection.PropertyInfo pi, string prefix)
         {
-            try { return ResultParser.Parse(xml, pi, attribute); }
+            try { return ResultParser.Parse(xml, pi, prefix); }
             catch { return default(object); }
         }
 
