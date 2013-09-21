@@ -132,6 +132,7 @@ namespace mmcSolutions.SolrParser
 
             return null;
         }
+
         /// <summary>
         /// Get the value of a object based on a property in a Solr XML query result.
         /// </summary>
@@ -156,68 +157,160 @@ namespace mmcSolutions.SolrParser
                     return GetArray(pi, element, attr.Name);
 
                 case SolrType.Date:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToDateOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToDate(attr.Name) }).SingleOrDefault().Value;
+                    return GetDateObjectValue(element, attr);
 
                 case SolrType.Bool:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToBooleanOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToBoolean(attr.Name) }).SingleOrDefault().Value;
+                    return GetBooleanObjectValue(element, attr);
 
                 case SolrType.Decimal:
                 case SolrType.Currency:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToDecimalOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToDecimal(attr.Name) }).SingleOrDefault().Value;
+                    return GetDecimalObjectValue(element, attr);
 
                 case SolrType.Double:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToDoubleOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToDouble(attr.Name) }).SingleOrDefault().Value;
+                    return GetDoubleObjectValue(element, attr);
 
                 case SolrType.Int:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToIntOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToInt(attr.Name) }).SingleOrDefault().Value;
+                    return GetIntObjectValue(element, attr);
 
                 case SolrType.Long:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToLongOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToLong(attr.Name) }).SingleOrDefault().Value;
+                    return GetLongObjectValue(element, attr);
 
                 case SolrType.Short:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToShortOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToShort(attr.Name) }).SingleOrDefault().Value;
+                    return GetShortObjectValue(element, attr);
 
                 case SolrType.Float:
-                    if (attribute.IsNullable)
-                        return element.Select(e => new { Value = e.ToFloatOrNull(attr.Name) }).SingleOrDefault().Value;
-                    else
-                        return element.Select(e => new { Value = e.ToFloat(attr.Name) }).SingleOrDefault().Value;
+                    return GetFloatObjectValue(element, attr);
 
                 case SolrType.String:
                 case SolrType.Binary:
                     return element.Select(e => new { Value = e.ToString(attr.Name) }).SingleOrDefault().Value;
 
                 case SolrType.Complex:
-                    var sca = GetAttribute<SolrComplexAttribute>(pi);
-                    var scaPrefix = string.Format("{0}{1}", sca.Prefix, sca.Separator);
-                    prefix += scaPrefix;
-                    return element.Select(e => new { Value = e.ToComplex(xml, pi, prefix) }).SingleOrDefault().Value;
+                    return GetComplexObjectValue(pi, prefix, element);
 
             }
 
             return null;
         }
+
+        #region Auxiliar methods to GetObjectValue(pi, attribute, xml, prefix) method
+        /// <summary>
+        /// Get a date value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>.
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetDateObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToDateOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToDate(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a boolean value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetBooleanObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToBooleanOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToBoolean(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a decimal value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetDecimalObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToDecimalOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToDecimal(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a double value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetDoubleObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToDoubleOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToDouble(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a int value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetIntObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToIntOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToInt(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a long value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetLongObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToLongOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToLong(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a short value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetShortObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToShortOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToShort(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a float value of a object based on a <see cref="IEnumerable<XElement> element"/> and a <see cref="SolrAttribute"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetFloatObjectValue(IEnumerable<XElement> element, SolrAttribute attr)
+        {
+            if (attr.IsNullable)
+                return element.Select(e => new { Value = e.ToFloatOrNull(attr.Name) }).SingleOrDefault().Value;
+            else
+                return element.Select(e => new { Value = e.ToFloat(attr.Name) }).SingleOrDefault().Value;
+        }
+        /// <summary>
+        /// Get a complex object based on a <see cref="IEnumerable<XElement> element"/>, a <see cref="PropertyInfo"/>
+        /// </summary>
+        /// <param name="element">A <see cref="IEnumerable<XElement> element"/> that contains a <see cref="SolrAttribute"/></param>
+        /// <param name="attr">A <see cref="SolrAttribute"/> used to identify the date information on <see cref="element"/></param>
+        /// <returns></returns>
+        private static object GetComplexObjectValue(PropertyInfo pi, string prefix, IEnumerable<XElement> element)
+        {
+            var sca = GetAttribute<SolrComplexAttribute>(pi);
+            prefix += string.Format("{0}{1}", sca.Prefix, sca.Separator);
+            return element.Select(e => new { Value = e.ToComplex(pi, prefix) }).SingleOrDefault().Value;
+        }
+        #endregion
 
         private static object GetArray(PropertyInfo pi, IEnumerable<XElement> element, string attributeName)
         {

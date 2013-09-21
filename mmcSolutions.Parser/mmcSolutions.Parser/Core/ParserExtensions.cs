@@ -244,9 +244,9 @@ namespace mmcSolutions.SolrParser
             catch { return null; }
         }
 
-        public static object ToComplex(this XElement element, string xml, System.Reflection.PropertyInfo pi, string prefix)
+        public static object ToComplex(this XElement element, System.Reflection.PropertyInfo pi, string prefix)
         {
-            try { return ResultParser.Parse(xml, pi, prefix); }
+            try { return ResultParser.Parse(element.ToString(), pi, prefix); }
             catch { return default(object); }
         }
 
